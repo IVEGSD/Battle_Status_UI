@@ -3,29 +3,43 @@ using UnityEngine.UI;
 
 public class Controller : MonoBehaviour
 {
-    private Transform allPlayerPanel;
-    private AnimationControllerSupport animSupport;
-    public bool autoChangePlayer;
-
-    [Header("Animation Control")] private Animator battleStatusUI;
-
-    //character image control
-    private readonly Sprite[] characterImages = new Sprite[5];
+    //Animation Control
+    private Animator battleStatusUI;
+    private Animator mission;
     private Animator characterSelector;
+    private AnimationControllerSupport animSupport;
+
+    //Character Image Control
+    private Transform allPlayerPanel;
+    private readonly Sprite[] characterImages = new Sprite[5];
     private Image characterStatusImage;
 
-    [Header("Debug")] public int currentPlayer;
+    //Upper Status Bar Control
+    private Text roundNumberText;
+    
 
-    private float elapsedTime;
-    private float elapsedTime2;
+    [Header("Debug")]
+    public int currentPlayer;
+    public int LastPlayer;
+    public float elapsedTime;
+    public float elapsedTime2;
     public int health = 100;
 
-    //Status Bar Control
+    //Left【Tab】Control
     private bool isEntered;
-    public int LastPlayer;
     public int maxPlayer = 5;
-    private Animator mission;
-    public bool reduceHealth;
+    public bool autoReduceHealth;
+    public bool autoChangePlayer;
+    public int roundNumber = 1;
+
+/* 有用Method：
+ * ChangePlayer(int player)
+ * ChangeHealth(int health, int player) - 用之前要自己先get 個player嘅 health，
+ *                                         - 有5個player你就要自己開5個 health variable
+ *                                             - 你可以改咗個method先get 個fillAmount，再改個health
+ * ChangeMana(int mana, int player) - same as above
+ * ChangeRound(int r) - 入乜show乜
+*/
 
     private void Start()
     {
@@ -38,6 +52,8 @@ public class Controller : MonoBehaviour
             .GetComponent<Image>();
         LoadCharacterSprites();
         isEntered = false;
+        roundNumberText = GameObject.Find("Panel_BattleStatusBar").GetComponentInChildren<Text>();
+        
     }
 
     private void Update()
@@ -47,15 +63,20 @@ public class Controller : MonoBehaviour
 
         //Debug - AutoChangePlayer
         if (autoChangePlayer)
+        {
             TestChangePlayer(2f); //change current player each second
+            ChangeRound(++roundNumber);
+        }
+            
 
         //Debug - ReduceHealth
-        if (reduceHealth)
+        if (autoReduceHealth)
         {
             elapsedTime2 += Time.deltaTime;
             if (elapsedTime2 >= 1)
             {
                 ChangeHealth(--health, currentPlayer);
+                ChangeMana((health-=5), currentPlayer);
                 elapsedTime2 = 0;
             }
         }
@@ -109,11 +130,19 @@ public class Controller : MonoBehaviour
     }
 
     //用來改變Player在左方【Tab】上的Health bar
-    private void ChangeHealth(int health, int player)
+    public void ChangeHealth(int health, int player)
     {
+        //due to different player contains different HP and MP Image, so get component here
         var i = allPlayerPanel.GetChild(player).Find("PlayerHP").GetComponent<Image>();
-        var hp = (float) health / 100;
+        var hp = (float)health / 100;  //change to decimal number
         i.fillAmount = hp;
+    }
+
+    public void ChangeMana(int mana, int player)
+    {
+        var i = allPlayerPanel.GetChild(player).Find("PlayerMP").GetComponent<Image>();
+        var mp = (float)mana / 100;
+        i.fillAmount = mp;
     }
 
     //自動轉【currentPlayer】，用於testing
@@ -164,4 +193,11 @@ public class Controller : MonoBehaviour
             isEntered = false;
         }
     }
+
+    //用來改Round Number
+    public void ChangeRound(int r)
+    {
+        roundNumberText.text = "Round : " + r; 
+    }
+    
 }
