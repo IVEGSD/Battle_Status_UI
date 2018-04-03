@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class Controller : MonoBehaviour
@@ -13,6 +14,11 @@ public class Controller : MonoBehaviour
     private Transform allPlayerPanel;
     private readonly Sprite[] characterImages = new Sprite[5];
     private Image characterStatusImage;
+    //Enemy
+    private Image EnemyStatusImage;
+    public int emenyNumber;
+    //Debug - List
+    List<EnemySprite> enemySprites;
 
     //Upper Status Bar Control
     private Text roundNumberText;
@@ -32,14 +38,17 @@ public class Controller : MonoBehaviour
     public bool autoChangePlayer;
     public int roundNumber = 1;
 
-/* 有用Method：
- * ChangePlayer(int player)
- * ChangeHealth(int health, int player) - 用之前要自己先get 個player嘅 health，
- *                                         - 有5個player你就要自己開5個 health variable
- *                                             - 你可以改咗個method先get 個fillAmount，再改個health
- * ChangeMana(int mana, int player) - same as above
- * ChangeRound(int r) - 入乜show乜
-*/
+    
+
+
+    /* 有用Method：
+     * ChangePlayer(int player)
+     * ChangeHealth(int health, int player) - 用之前要自己先get 個player嘅 health，
+     *                                         - 有5個player你就要自己開5個 health variable
+     *                                             - 你可以改咗個method先get 個fillAmount，再改個health
+     * ChangeMana(int mana, int player) - same as above
+     * ChangeRound(int r) - 入乜show乜
+    */
 
     private void Start()
     {
@@ -53,7 +62,9 @@ public class Controller : MonoBehaviour
         LoadCharacterSprites();
         isEntered = false;
         roundNumberText = GameObject.Find("Panel_BattleStatusBar").GetComponentInChildren<Text>();
-        
+
+        //Debug - List
+        enemySprites = LoadEnemySprite(GameObject.Find("Level1Container").GetComponent<Level1>().enemyList);
     }
 
     private void Update()
@@ -170,6 +181,18 @@ public class Controller : MonoBehaviour
         characterImages[3] = Resources.Load<Sprite>("Sprites/p2");
         characterImages[4] = Resources.Load<Sprite>("Sprites/p1");
     }
+    
+    public List<EnemySprite> LoadEnemySprite(List<Enemy> enemyList)
+    {
+        List<EnemySprite> temp = new List<EnemySprite>();
+        if (enemyList.Exists(x => x.Type == Enemy.EnemyType.type1))
+            temp.Add(new EnemySprite() { type = Enemy.EnemyType.type1, sprite = Resources.Load<Sprite>("Sprites/e1") });
+        if (enemyList.Exists(x => x.Type == Enemy.EnemyType.type2))
+            temp.Add(new EnemySprite() { type = Enemy.EnemyType.type2, sprite = Resources.Load<Sprite>("Sprites/e2") });
+        if (enemyList.Exists(x => x.Type == Enemy.EnemyType.type3))
+            temp.Add(new EnemySprite() { type = Enemy.EnemyType.type3, sprite = Resources.Load<Sprite>("Sprites/e3") });
+        return temp;
+    }
 
     //改變【currentPlayer】，【狀態欄的圖片】，以及【標示(紅色border)】住左方Player的Tab
     public void ChangePlayer(int player)
@@ -200,4 +223,11 @@ public class Controller : MonoBehaviour
         roundNumberText.text = "Round : " + r; 
     }
     
+}
+
+[System.Serializable]
+public class EnemySprite
+{
+    public Enemy.EnemyType type;
+    public Sprite sprite;
 }
