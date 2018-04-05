@@ -39,9 +39,6 @@ public class Controller : MonoBehaviour
     public bool autoChangePlayer;
     public int roundNumber = 1;
 
-    
-
-
     /* 有用Method：
      * ChangePlayer(int player)
      * ChangeHealth(int health, int player) - 用之前要自己先get 個player嘅 health，
@@ -64,9 +61,6 @@ public class Controller : MonoBehaviour
         LoadCharacterSprites();
         isEntered = false;
         roundNumberText = GameObject.Find("Panel_BattleStatusBar").GetComponentInChildren<Text>();
-
-        //Debug - List
-        enemySprites = LoadEnemySprite(GameObject.Find("Level1Container").GetComponent<Level1>().enemyList);
     }
 
     private void Update()
@@ -125,6 +119,7 @@ public class Controller : MonoBehaviour
             battleStatusUI.Play("IntoBattle");
             if (!animSupport.GetCurrentStatus())
                 characterSelector.Play("IntoStatus");
+            enemySelector.Play("Enemy_Status_Enter");
         }
 
         if (Input.GetKeyDown(KeyCode.W))
@@ -132,6 +127,7 @@ public class Controller : MonoBehaviour
             battleStatusUI.Play("LeaveBattle");
             if (!animSupport.GetCurrentStatus())
                 characterSelector.Play("Status_Leave");
+            enemySelector.Play("Enemy_Status_Leave");
         }
     }
 

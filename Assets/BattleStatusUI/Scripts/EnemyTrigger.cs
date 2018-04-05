@@ -7,11 +7,12 @@ using UnityEngine.UI;
 public class EnemyTrigger : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     public Enemy.EnemyType type;
-    public static List<EnemySprite> enemySprites;
+    public static List<EnemySprite> enemySprites = enemySprites = new List<EnemySprite>();
     EnemySprite mySprite;
     public Image enemyImage;
     private Animator enemySelector;
 
+    //Mouse Over the Button
     public void OnPointerEnter(PointerEventData eventData)
     {
         Debug.Log("Over!");
@@ -19,25 +20,20 @@ public class EnemyTrigger : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         enemySelector.Play("Enemy_Status_Enter");
     }
 
+    //Mouse Exit the Button
     public void OnPointerExit(PointerEventData eventData)
     {
         Debug.Log("Exit!");
         enemySelector.Play("Enemy_Status_Leave");
     }
 
-    // Use this for initialization
-    void Start () {
-        enemySprites = GameObject.Find("Level1Container").GetComponent<Level1>().enemySprites;
+    void Start() {
         mySprite = LoadEnemySprite(type);
         enemySprites.Add(mySprite);
         enemySelector = GameObject.Find("Panel_EnemySelector").GetComponent<Animator>();
     }
-
-    // Update is called once per frame
-    void Update () {
-		
-	}
-
+    
+    //Load the Sprite by its type
     public EnemySprite LoadEnemySprite(Enemy.EnemyType _type)
     {
         EnemySprite temp = new EnemySprite();
