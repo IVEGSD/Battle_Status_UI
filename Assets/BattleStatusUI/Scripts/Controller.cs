@@ -9,6 +9,7 @@ public class Controller : MonoBehaviour
     private Animator mission;
     private Animator characterSelector;
     private AnimationControllerSupport animSupport;
+    private Animator enemySelector;
 
     //Character Image Control
     private Transform allPlayerPanel;
@@ -55,6 +56,7 @@ public class Controller : MonoBehaviour
         animSupport = GameObject.Find("Panel_CharacterSelector").GetComponent<AnimationControllerSupport>();
         battleStatusUI = GameObject.Find("Canvas_BattleStatusUI").GetComponent<Animator>();
         characterSelector = GameObject.Find("Panel_CharacterSelector").GetComponent<Animator>();
+        enemySelector = GameObject.Find("Panel_EnemySelector").GetComponent<Animator>();
         mission = GameObject.Find("Panel_Mission").GetComponent<Animator>();
         allPlayerPanel = GameObject.Find("Canvas_BattleStatusUI").transform.Find("Panel_AllPlayer");
         characterStatusImage = GameObject.Find("Panel_CharacterSelector").transform.GetChild(0).GetChild(0)
@@ -104,12 +106,19 @@ public class Controller : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.S)) battleStatusUI.Play("LeaveBattle");
 
         if (Input.GetKeyDown(KeyCode.D))
+        {
             if (!animSupport.GetCurrentStatus())
                 characterSelector.Play("IntoStatus");
+            enemySelector.Play("Enemy_Status_Enter");
+        }
+            
 
         if (Input.GetKeyDown(KeyCode.F))
+        {
             if (!animSupport.GetCurrentStatus())
                 characterSelector.Play("Status_Leave");
+            enemySelector.Play("Enemy_Status_Leave");
+        }
 
         if (Input.GetKeyDown(KeyCode.Q))
         {
